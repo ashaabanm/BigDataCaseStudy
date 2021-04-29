@@ -1,0 +1,26 @@
+1- yum install python-pip
+
+2- download : https://pypi.org/project/pip/18.0/#files and add it  on vm
+
+3- pip install pip-18.0-py2.py3-none-any.whl
+
+4- pip install kafka-python --trusted-host pypi.org --trusted-host files.pythonhosted.org
+
+5- pip install tweepy --trusted-host pypi.org --trusted-host files.pythonhosted.org
+
+6- pip install setuptools==38.6.1 --trusted-host pypi.org --trusted-host files.pythonhosted.org
+
+7- pip install kafka-utils --trusted-host pypi.org --trusted-host files.pythonhosted.org
+
+8- pip install jsonpickle --trusted-host pypi.org --trusted-host files.pythonhosted.org
+
+9- pip install nltk==3.4.5 --trusted-host pypi.org --trusted-host files.pythonhosted.org
+
+10- pip install textblob==0.9.0 --trusted-host pypi.org --trusted-host files.pythonhosted.org
+
+11- sudo timedatectl set-timezone Africa/Cairo
+
+12- date -s "27 APR 2021 16:36:00"
+
+# note
+kafka broker on vm is : "sandbox-hdp.hortonworks.com:6667"
