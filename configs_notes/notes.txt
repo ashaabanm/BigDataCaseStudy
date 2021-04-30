@@ -1,2 +1,2 @@
 #create parquet table
-CREATE EXTERNAL TABLE myParquetTable (tweet_id string,text string,user_id string,name string,user_name string,location string,followers_count BIGINT,polarity double)STORED AS PARQUET LOCATION '/tmp/output/Tweets';
+CREATE EXTERNAL TABLE myParquetTable (tweet_id string,text string,user_id string,name string,user_name string,location string,followers_count BIGINT,polarity double,tweet_date timestamp)STORED AS PARQUET LOCATION '/tmp/output/Tweets';

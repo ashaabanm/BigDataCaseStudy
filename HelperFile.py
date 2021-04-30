@@ -32,6 +32,7 @@ class Twitter:
         analysis = TextBlob(tweet.text)
         dic = {"tweet_id": tweet.id_str,
                "user_id": tweet.user.id_str,
+               "tweet_date": tweet.created_at,
                "text": tweet.text.encode('ascii', 'ignore').decode('ascii'),
                "name": tweet.user.name.encode('ascii', 'ignore').decode('ascii'),
                "user_name": tweet.user.screen_name,

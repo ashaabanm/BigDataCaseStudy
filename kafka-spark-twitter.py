@@ -1,5 +1,7 @@
 import json
 import tweepy
+from HelperFile import Twitter
+from datetime import datetime
 import jsonpickle
 from pyspark.sql.context import SQLContext
 from pyspark import Row, RDD
@@ -33,28 +35,40 @@ sc = spark_context_creator()
 ssc = StreamingContext(sc, 5)
 
 kafkaStream = KafkaUtils.createDirectStream(ssc, topics=[configs.TOPIC_NAME],
-                                            kafkaParams={"metadata.broker.list":configs.BROKER})
+                                            kafkaParams={"metadata.broker.list": configs.BROKER})
 sqlContext = SQLContext(sc)
 
 
-def ananlysis(a):
-    return (0)
+def replyingMsg(polarity, name):
+    msg = ""
+    if (polarity < -0.3):
+        msg = "Sorry " + name + " there are misunderstanding happened please send us your phone to contact with you"
+    elif (polarity > 0.3):
+        msg = "thanks " + name + " for using our service"
+    else:
+        msg = "thanks " + name + " for using our service and if there any proplems plaese contact with customer services"
+    return msg + " " + str(datetime.now())
 
-def retweet(api, msg, tweetId, screen_name):
-    api.update_status(msg + " @" + screen_name, tweetId)
+
+def retweet(api, tweetId, polarity, name, screen_name):
+    api.update_status(replyingMsg(polarity, name) + " @" + screen_name, tweetId)
 
 
 def logic(record):
-    print(record[1])
-    # writeParquet(sqlContext,record[1])
+    print("===================================")
+    twit_api=Twitter().apiObj()
+    retweet(twit_api,record["tweet_id"],record["polarity"],record["name"],record["user_name"])
+    print(record)
 
 
 def sendRecord(rdd):
     print(rdd.isEmpty())
     if (rdd.isEmpty() == False):
-        # rdd.foreach(lambda record: logic2(record))
-        rdd2=rdd.map(lambda record: convertRecToDic(record)).collect()
+        rdd2 = rdd.map(lambda record: convertRecToDic(record)).collect()
+        for rec in rdd2:
+          logic(rec)
         writeParquet(sqlContext, rdd2)
+
 
 def convertRecToDic(record):
     tweet_uni = record[1]  # value
@@ -62,8 +76,6 @@ def convertRecToDic(record):
     tweet_obj = jsonpickle.decode(tweet_str)
     my_dict = HelperFile.Twitter().filterTweet(tweet_obj)
     my_dict = HelperFile.dict_clean(my_dict)
-    print(my_dict)
-    print(type(my_dict))
     return my_dict
 
 

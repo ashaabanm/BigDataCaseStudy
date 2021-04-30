@@ -30,8 +30,8 @@ api = twitter.apiObj()
 
 tweets_listener = MyStreamListener(api)
 stream = tweepy.Stream(api.auth, tweets_listener)
-reviewer = "usa"  # AhmedSh59521052
-stream.filter(track=["java"])  # , languages=["en"]
+reviewer = "AhmedSh59521052"  # AhmedSh59521052
+stream.filter(track=[reviewer])  # , languages=["en"]
 
 # ========================================================================================== #
 
