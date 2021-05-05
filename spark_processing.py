@@ -1,25 +1,23 @@
 import json
-import tweepy
-from HelperFile import Twitter
 from datetime import datetime
 import jsonpickle
 from pyspark.sql.context import SQLContext
-from pyspark import Row, RDD
 from pyspark import SparkConf, SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 import HelperFile
 import configs
+from parquet_helper import *
 
-from parquet_helper import writeParquet
+twitter_obj = HelperFile.Twitter()
+twitter_api = twitter_obj.api_obj()
 
 
 def spark_context_creator():
     conf = SparkConf()
-
     conf.setAppName("ConnectingDotsSparkKafkaStreaming")
-
     sc = None
+
     try:
         sc.stop()
         sc = SparkContext(conf=conf)
@@ -39,7 +37,7 @@ kafkaStream = KafkaUtils.createDirectStream(ssc, topics=[configs.TOPIC_NAME],
 sqlContext = SQLContext(sc)
 
 
-def replyingMsg(polarity, name):
+def replying_msg(name,polarity):
     msg = ""
     if (polarity < -0.3):
         msg = "Sorry " + name + " there are misunderstanding happened please send us your phone to contact with you"
@@ -47,39 +45,40 @@ def replyingMsg(polarity, name):
         msg = "thanks " + name + " for using our service"
     else:
         msg = "thanks " + name + " for using our service and if there any proplems plaese contact with customer services"
-    return msg + " " + str(datetime.now())
+    return msg + " , time is: " + str(datetime.now())
 
 
-def retweet(api, tweetId, polarity, name, screen_name):
-    api.update_status(replyingMsg(polarity, name) + " @" + screen_name, tweetId)
+def retweet(msg, screen_name, tweetId):
+    twitter_api.update_status(msg + " @" + screen_name, tweetId)
 
 
-def logic(record):
-    print("===================================")
-    twit_api=Twitter().apiObj()
-    retweet(twit_api,record["tweet_id"],record["polarity"],record["name"],record["user_name"])
+def send_tweet(record):
+    retweet(record["retweet"], record["user_name"], record["tweet_id"])
     print(record)
+    print("===================================")
 
 
-def sendRecord(rdd):
+def rdd_processing(rdd):
     print(rdd.isEmpty())
-    if (rdd.isEmpty() == False):
-        rdd2 = rdd.map(lambda record: convertRecToDic(record)).collect()
-        for rec in rdd2:
-          logic(rec)
-        writeParquet(sqlContext, rdd2)
+    if (rdd.isEmpty() == False):  # check if rdd batch is empty or not
+        print("i rceived")
+        rec_list = rdd.map(lambda record: parse_tweet(record)).collect()
+        for rec in rec_list:
+            send_tweet(rec)
+        write_parquet(sqlContext, rec_list)
 
 
-def convertRecToDic(record):
-    tweet_uni = record[1]  # value
-    tweet_str = json.loads(tweet_uni).encode("utf-8")
-    tweet_obj = jsonpickle.decode(tweet_str)
-    my_dict = HelperFile.Twitter().filterTweet(tweet_obj)
-    my_dict = HelperFile.dict_clean(my_dict)
-    return my_dict
+def parse_tweet(record):
+    tweet = record[1]  # take value value
+    tweet_str = json.loads(tweet).encode("utf-8")  # convert tweet to string
+    tweet_obj = jsonpickle.decode(tweet_str)  # convert tweet string to object
+    dict = twitter_obj.convert_tweet_to_dict(tweet_obj)
+    cleaned_dict = HelperFile.clean_dic(dict)
+    cleaned_dict["retweet"] = replying_msg(dict["name"], dict["polarity"])  # add retweet to dictionary
+    return cleaned_dict
 
 
-kafkaStream.foreachRDD(sendRecord)
+kafkaStream.foreachRDD(rdd_processing)
 
 # ssc.checkpoint(".")
 ssc.start()

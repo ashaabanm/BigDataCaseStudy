@@ -7,7 +7,7 @@ from HelperFile import Twitter
 import configs
 
 twitter = Twitter()
-class MyStreamListener(tweepy.StreamListener):
+class TweetStreamListener(tweepy.StreamListener):
 
     def __init__(self, api):
         self.api = api
@@ -26,12 +26,11 @@ class MyStreamListener(tweepy.StreamListener):
         print(status)
 
 # Create API object
-api = twitter.apiObj()
+api = twitter.api_obj()
 
-tweets_listener = MyStreamListener(api)
+tweets_listener = TweetStreamListener(api)
 stream = tweepy.Stream(api.auth, tweets_listener)
-reviewer = "AhmedSh59521052"  # AhmedSh59521052
-stream.filter(track=[reviewer])  # , languages=["en"]
+stream.filter(track=[configs.MENTIONED_KEYWORD])  # , languages=["en"]
 
 # ========================================================================================== #
 

@@ -2,7 +2,6 @@ import tweepy
 from textblob import TextBlob
 import configs
 
-
 class Twitter:
 
     def __init__(self):
@@ -24,11 +23,10 @@ class Twitter:
         except:
             print("Error during authentication")
 
-    def apiObj(self):
+    def api_obj(self):
         return self.api
 
-    def filterTweet(self, tweet):
-        # "text": tweet["text"]
+    def convert_tweet_to_dict(self, tweet):
         analysis = TextBlob(tweet.text)
         dic = {"tweet_id": tweet.id_str,
                "user_id": tweet.user.id_str,
@@ -42,11 +40,11 @@ class Twitter:
                }
         return dic
 
-    def retrieveTweets(self, searchWord):
+    def retrieve_tweets_by_keyword(self, searchWord):
         return self.api.search(q=searchWord, lang="en", rpp=10)
 
 
-def dict_clean(dic):
+def clean_dic(dic):
     result = {}
     for key, value in dic.items():
         if value is None:
