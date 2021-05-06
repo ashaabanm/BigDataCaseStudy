@@ -34,7 +34,10 @@ stream.filter(track=[configs.MENTIONED_KEYWORD])  # , languages=["en"]
 
 # ========================================================================================== #
 
-# search_query = f"{reviewer} -filter:retweets"
+# search_query = f"#donaldtrump -filter:retweets"
 #
-# for tweet in Twitter().retrieveTweets(search_query):
-#     print(tweet._json['id'])
+# for tweet in Twitter().retrieve_tweets_by_keyword(search_query):
+#     f = open("tweets.txt", "a")
+#     f.write(json.dumps(tweet._json))
+#     f.close()
+#     print(tweet._json)
