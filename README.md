@@ -27,6 +27,15 @@ you can follow instruction and installation on configs_notes folder.
 
 ##  [dashboard for showing some insights](https://github.com/ashaabanm/BigDataCaseStudy/blob/main/dashboard/first_dashboard.pbix)
 
+##Requirements
+*setuptools==44.1.1
+*jsonpickle==2.0.0
+*findspark==1.4.2
+*kafka-python==2.0.2
+*kafka-utils==2.3.0
+*nltk==3.4.5
+*textblob==0.15.3
+*tweepy==3.10.0
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
