@@ -27,7 +27,7 @@ you can follow instruction and installation on configs_notes folder.
 
 ##  [dashboard for showing some insights](https://github.com/ashaabanm/BigDataCaseStudy/blob/main/dashboard/first_dashboard.pbix)
 
-##Requirements
+## Requirements
 *setuptools==44.1.1
 *jsonpickle==2.0.0
 *findspark==1.4.2
