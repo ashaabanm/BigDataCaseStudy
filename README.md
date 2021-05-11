@@ -23,7 +23,9 @@ you can follow instruction and installation on configs_notes folder.
 ```
 
 ## Sample of tweet after processing
-![alt text](https://github.com/ashaabanm/BigDataCaseStudy/blob/main/configs_notes/smaple_of_data.png?raw=true)
+![Sample of tweet](https://github.com/ashaabanm/BigDataCaseStudy/blob/main/configs_notes/smaple_of_data.png?raw=true)
+## Architecture
+![Architecture](https://github.com/ashaabanm/TwitterRealtimeUseCase/blob/main/configs_notes/pipline_architecture.png?raw=true)
 
 ##  [dashboard for showing some insights](https://github.com/ashaabanm/BigDataCaseStudy/blob/main/dashboard/first_dashboard.pbix)
 
